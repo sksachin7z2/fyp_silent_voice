@@ -6,13 +6,11 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 from concurrent.futures import ThreadPoolExecutor
-from flask import request, jsonify
 from flask_cors import CORS
 import tensorflow as tf
 from tensorflow.keras.layers import Dense
 from tensorflow.keras import layers
 from mapping import signs
-import uuid
 
 
 
@@ -221,7 +219,7 @@ print("model loaded")
 
 
 
-def load_process_predict(landmarks,id):
+def load_process_predict(landmarks):
     # mp_drawing = mp.solutions.drawing_utils
     # mp_drawing_styles = mp.solutions.drawing_styles
     # mp_holistic = mp.solutions.holistic
@@ -389,14 +387,14 @@ def load_process_predict(landmarks,id):
 @app.route('/',methods=['GET'])
 def wel():
     return "mshdvbh"
-def process_video(landmarks,id):
+def process_video(landmarks):
     try:
         # Save the video file to the server (or process it directly)
         # print(video_file)
         # print("Unique Number:", unique_number)
         # video_path = f'uploads/video{unique_number}.mp4'
         # video_file.save(video_path)
-        prediction = load_process_predict(landmarks,id)
+        prediction = load_process_predict(landmarks)
         # Process the video file (implement your logic here)
         print(prediction)
         return {'message': 'Video uploaded and processed successfully.', "pred": prediction}
@@ -407,13 +405,13 @@ def process_video(landmarks,id):
 def upload_video():
     try:
         # video_file = request.files['video']
-        unique_number = str(uuid.uuid4())
+        # unique_number = str(uuid.uuid4())
         landmarks=request.get_json()
         # print(landmarks['data'][0])
         # Create a ThreadPoolExecutor with max_workers set to the number of CPU cores
         with ThreadPoolExecutor() as executor:
             # Submit the process_video function to the executor
-            future = executor.submit(process_video,landmarks['data'],unique_number)
+            future = executor.submit(process_video,landmarks['data'])
             # Retrieve the result of the function execution
             result = future.result()
         print(jsonify(result))
