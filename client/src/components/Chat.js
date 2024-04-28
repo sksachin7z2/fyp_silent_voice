@@ -2,7 +2,7 @@ import React from 'react'
 
 function Chat({result}) {
   return (
-    <div className='h-[62vh] overflow-y-scroll'>
+    <div className='h-[70vh] overflow-y-scroll'>
          
    
    <div className='mx-3'>

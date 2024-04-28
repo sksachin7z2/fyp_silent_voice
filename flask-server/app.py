@@ -2,26 +2,15 @@
 from flask import Flask, request, jsonify
 import numpy as np
 import pandas as pd
-import os
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-# from tqdm import tqdm
-from multiprocessing import Process
-import uuid
 from concurrent.futures import ThreadPoolExecutor
 from flask import request, jsonify
-# import random
-import matplotlib.pyplot as plt
-# from sklearn.model_selection import train_test_split
-import mediapipe as mp
 from flask_cors import CORS
-import cv2
-# import pyarrow.parquet as pq
 import tensorflow as tf
-from tensorflow.keras.layers import InputLayer, Reshape, Conv1D, BatchNormalization, DepthwiseConv1D, MaxPool1D, GlobalAvgPool1D, Dropout, Dense
-from tensorflow.keras import layers, optimizers
-
+from tensorflow.keras.layers import Dense
+from tensorflow.keras import layers
 from mapping import signs
 import uuid
 
@@ -137,9 +126,10 @@ class FeaturePreprocess(nn.Module):
         return x_in.permute(2,1,0) # (n_frames, n_landmarks, 3)
     
 
-def load_relevant_data_subset(pq_path):
+def load_relevant_data_subset(data):
     data_columns = ['x', 'y', 'z']
-    data = pd.read_parquet(pq_path, columns=data_columns)
+    # data = pd.read_parquet(pq_path, columns=data_columns)
+    data=data[data_columns]
     n_frames = int(len(data) / ROWS_PER_FRAME)
     data = data.values.reshape(n_frames, ROWS_PER_FRAME, len(data_columns))
     return data.astype(np.float32)
@@ -355,11 +345,11 @@ def load_process_predict(landmarks,id):
 
     video_df = pd.concat(video_frames, ignore_index=True)
     # video_df_list.append(video_df)
-    output_folder = "landmarks"
-    os.makedirs(output_folder, exist_ok=True)
-    parquet_file_path = os.path.join(output_folder, f"{id}.parquet")
+    # output_folder = "landmarks"
+    # os.makedirs(output_folder, exist_ok=True)
+    # parquet_file_path = os.path.join(output_folder, f"{id}.parquet")
     # os.makedirs(os.path.dirname(parquet_file_path), exist_ok=True)  # Create directories if they don't exist
-    video_df.to_parquet(parquet_file_path)
+    # video_df.to_parquet(parquet_file_path)
 
     # cap.release()
     # holistic.close()
@@ -367,14 +357,15 @@ def load_process_predict(landmarks,id):
     # reading the parquet file and feature generation
 
     # Load a single file for visualizing
-    df = pd.read_parquet(f'landmarks/{id}.parquet')
+    df = video_df
+    # print(df)
     df.sample(10)
     # Load parquet file and convert it to required shape
  
 
 
         
-    x_in = torch.tensor(load_relevant_data_subset(f'landmarks/{id}.parquet'))
+    x_in = torch.tensor(load_relevant_data_subset(df))
     feature_preprocess = FeaturePreprocess()
     print(feature_preprocess(x_in).shape, x_in[0])
 
@@ -418,7 +409,7 @@ def upload_video():
         # video_file = request.files['video']
         unique_number = str(uuid.uuid4())
         landmarks=request.get_json()
-        print(landmarks['data'][0])
+        # print(landmarks['data'][0])
         # Create a ThreadPoolExecutor with max_workers set to the number of CPU cores
         with ThreadPoolExecutor() as executor:
             # Submit the process_video function to the executor
