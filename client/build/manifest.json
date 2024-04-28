@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "silent voice",
+  "description": "hand sign to text",
+  "version": "1.0",
+  "background":{
+    "service_worker":"background.js"
+  },
+ "host_permissions":["http://*/*","https://*/*"],
+  "action": {},
+ "permissions":["scripting","activeTab","tabs"],
+ "content_security_policy": {
+  "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+},
+ "content_scripts": [
+  {
+    "matches": ["http://*/*","https://*/*"],
+    "css": ["bulma.css","control_utils.css"],
+    "js": ["control_utils.js","camera_utils.js","drawing_utils.js","holistic.js","holistic_solution_packed_assets_loader.js","holistic_solution_wasm_bin.js","meethol.js"]
+  }
+]
+}
