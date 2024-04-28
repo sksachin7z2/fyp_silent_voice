@@ -6,7 +6,7 @@ import {Holistic} from '@mediapipe/holistic'
 import Webcam from 'react-webcam'
 let a=[]
 
-const HolisticPoseDetection = ({pon,socket,setResult}) => {
+const HolisticPoseDetection = ({pon,socket,setResult,overridehost}) => {
   
   const videoRef = useRef(null);
   const holisticRef = useRef(null);
@@ -45,7 +45,7 @@ async function onResultsHolistic(results) {
       let b=a
       a=[]
       try {
-        const response = await fetch('http://127.0.0.1:5000/upload_video', {
+        const response = await fetch(`http://${overridehost}:5000/upload_video`, {
           method: 'POST',
           body: JSON.stringify({ data: b }), // Stringify the body data
           headers: {

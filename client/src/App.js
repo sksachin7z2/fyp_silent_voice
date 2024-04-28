@@ -27,9 +27,9 @@ const [messages, setMessages] = useState([]);
     {
         setOnmeet(true)
     }
+    const overridehost="192.168.189.168"
 
-
-    const ENDPOINT="http://localhost:8000";
+    const ENDPOINT=`http://${overridehost}:8000`;
     
     useEffect(async() => {
     
@@ -83,12 +83,12 @@ const [messages, setMessages] = useState([]);
   <div className='text-center text-white font-semibold text-xl py-3'>
     Holistic Preview
   </div>
-  <div>
+  {/* <div>
     <button className='py-1 bg-slate-600 text-white rounded-md text-sm px-2' onClick={()=>setHolo(!holo)}>{!holo?"Show":"Hide"}</button>
-  </div>
+  </div> */}
   </div>
 
-  {holo&&<Holistic pon={poweron} socket={socket} setResult={setResult}/>}
+  {poweron&&<Holistic pon={poweron} overridehost={overridehost} socket={socket} setResult={setResult}/>}
 
   <div className='grid grid-cols-2 my-4 bg-gray-700 '>
     <div onClick={()=>{setToggle(false)}} className={`text-white font-semibold text-center py-4 cursor-pointer ${!toggle?"border-b-2":""}`}>

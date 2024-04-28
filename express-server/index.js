@@ -29,7 +29,9 @@ const io = new Server(httpServer, {
         methods: ["GET", "POST"]
       }
  });
- 
+app.get('/',(req,res)=>{
+  res.send("heltp")
+})
 
 io.on("connection", (socket) => {
   socket.on("join",({name,room},callback)=>{
