@@ -27,7 +27,7 @@ const [messages, setMessages] = useState([]);
     {
         setOnmeet(true)
     }
-    const overridehost="192.168.189.168"
+    const overridehost="192.168.88.168"
 
     const ENDPOINT=`http://${overridehost}:8000`;
     
